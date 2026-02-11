@@ -1,62 +1,86 @@
-/* CSS styling for the web application */
+:root {
+  --bg: #f4f6fc;
+  --card: #fff;
+  --line: #d9e0f5;
+  --text: #1f2a44;
+  --muted: #63708a;
+  --primary: #2f6df6;
+}
+
+* { box-sizing: border-box; }
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+  margin: 0;
+  background: linear-gradient(140deg, #eef2ff, #f9fbff 45%);
+  color: var(--text);
+  font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-header {
-    background: #50b3a2;
-    color: #fff;
-    padding: 10px 20px;
-    text-align: center;
+.app-shell {
+  width: min(1100px, 92vw);
+  margin: 2rem auto;
+  display: grid;
+  gap: 1rem;
 }
 
-h1 {
-    margin: 0;
+.app-header h1 { margin: 0 0 0.4rem; }
+.app-header p { margin: 0; color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 6px 22px rgba(31, 56, 116, 0.08);
+  padding: 1rem;
 }
 
-nav {
-    margin: 20px 0;
+.card h2 { margin: 0 0 0.8rem; font-size: 1.1rem; }
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.7rem;
 }
 
-nav a {
-    color: #50b3a2;
-    text-decoration: none;
-    margin: 0 15px;
+.search-grid {
+  display: grid;
+  gap: 0.6rem;
 }
 
-nav a:hover {
-    text-decoration: underline;
+label { display: grid; gap: 0.35rem; font-size: 0.92rem; }
+input, select, textarea, button {
+  font: inherit;
+  padding: 0.58rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
 }
 
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
+select[multiple] { min-height: 120px; }
+
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid #b7cbff;
+  border-color: #8ca9f3;
 }
 
-.footer {
-    background: #50b3a2;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+.button-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
 }
 
-.button {
-    padding: 10px 15px;
-    background: #50b3a2;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+.primary-btn, .secondary-btn { border: none; cursor: pointer; }
+.primary-btn { background: var(--primary); color: white; }
+.secondary-btn { background: #e8efff; color: #2b59d8; }
 
-.button:hover {
-    background: #444;
+.status-text { margin: 0.65rem 0 0; color: var(--muted); min-height: 1.2em; }
+.result-list { margin: 0.65rem 0 0; padding-left: 1rem; }
+.age-box {
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 0.65rem;
+  background: #f9fbff;
 }
+.age-box p { margin: 0.2rem 0; }
+
+.hidden { display: none; }

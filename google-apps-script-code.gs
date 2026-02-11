@@ -1,55 +1,117 @@
+var CONFIG = {
+  spreadsheetId: '1HWNKazkmqHN9xvEV18WxImkxKFzzL64_Ab16v4px4Pk',
+  sourceSheet: 'cur',
+  sourceRange: 'E2:E',
+  targetSheet: 'register_input'
+};
+
 function doGet(e) {
-  return ContentService.createTextOutput('Hello, World!');
+  var action = (e && e.parameter && e.parameter.action) || 'health';
+
+  if (action === 'listClients') {
+    return jsonOutput({ ok: true, data: getClientOptions_() });
+  }
+
+  return jsonOutput({ ok: true, message: 'GAS register service ready.' });
 }
 
 function doPost(e) {
-  var data = JSON.parse(e.postData.contents);
-  return ContentService.createTextOutput('Data received: ' + JSON.stringify(data));
-}
+  var body = safeParse_(e && e.postData && e.postData.contents);
+  var action = body.action;
 
-function createRecord(record) {
-  // Logic to create a record in the database
-}
+  if (action === 'checkClient') {
+    var keyword = String(body.keyword || '').trim();
+    var clients = getClientOptions_();
+    var match = clients.find(function(item) {
+      return item.toLowerCase() === keyword.toLowerCase();
+    });
 
-function readRecord(id) {
-  // Logic to read a record from the database
-}
-
-function updateRecord(id, record) {
-  // Logic to update a record in the database
-}
-
-function deleteRecord(id) {
-  // Logic to delete a record from the database
-}
-
-function setCORSHeaders() {
-  var headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type"
-  };
-  return headers;
-}
-
-function handleOptions() {
-  var headers = setCORSHeaders();
-  return ContentService.createTextOutput('').setHeaders(headers);
-}
-
-function handleRequest(e) {
-  if (e.httpMethod === 'OPTIONS') {
-    return handleOptions();
+    return jsonOutput({ ok: true, exists: Boolean(match), match: match || '' });
   }
-  var headers = setCORSHeaders();
-  if (e.httpMethod === 'GET') {
-    return doGet(e).setHeaders(headers);
-  } else if (e.httpMethod === 'POST') {
-    return doPost(e).setHeaders(headers);
+
+  if (action === 'createClient') {
+    var row = appendClient_(body.payload || {});
+    return jsonOutput({ ok: true, row: row });
   }
+
+  return jsonOutput({ ok: false, error: 'Unknown action: ' + action });
 }
 
-// Main entry point
-function main(e) {
-  return handleRequest(e);
+function getClientOptions_() {
+  var sheet = SpreadsheetApp.openById(CONFIG.spreadsheetId).getSheetByName(CONFIG.sourceSheet);
+  if (!sheet) return [];
+
+  var values = sheet.getRange(CONFIG.sourceRange).getDisplayValues();
+  return values
+    .map(function(r) { return String(r[0] || '').trim(); })
+    .filter(function(v) { return v !== ''; });
+}
+
+function appendClient_(payload) {
+  var spreadsheet = SpreadsheetApp.openById(CONFIG.spreadsheetId);
+  var sheet = spreadsheet.getSheetByName(CONFIG.targetSheet) || spreadsheet.insertSheet(CONFIG.targetSheet);
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow([
+      'Timestamp',
+      'Nama Klien',
+      'NIK',
+      'Tempat Lahir',
+      'Tanggal Lahir',
+      'Tanggal Acuan',
+      'Usia Hari Ini',
+      'Usia Acuan',
+      'Jenis Kelamin',
+      'Agama',
+      'Kewarganegaraan',
+      'Pendidikan',
+      'Pekerjaan',
+      'Alamat',
+      'Status Pernikahan',
+      'Telp Klien',
+      'Telp Penanggung Jawab',
+      'Perkara/Pasal',
+      'Lama Pidana',
+      'Registers JSON'
+    ]);
+  }
+
+  sheet.appendRow([
+    new Date(),
+    payload.namaKlien || '',
+    payload.nik || '',
+    payload.tempatLahir || '',
+    payload.tanggalLahir || '',
+    payload.tanggalAcuan || '',
+    payload.usiaHariIni || '',
+    payload.usiaAcuan || '',
+    payload.jenisKelamin || '',
+    payload.agama || '',
+    payload.kewarganegaraan || '',
+    payload.pendidikan || '',
+    payload.pekerjaan || '',
+    payload.alamat || '',
+    payload.statusPernikahan || '',
+    payload.telpKlien || '',
+    payload.telpPenanggungJawab || '',
+    payload.perkaraPasal || '',
+    payload.lamaPidana || '',
+    JSON.stringify(payload.registers || [])
+  ]);
+
+  return sheet.getLastRow();
+}
+
+function jsonOutput(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function safeParse_(text) {
+  try {
+    return JSON.parse(text || '{}');
+  } catch (err) {
+    return {};
+  }
 }

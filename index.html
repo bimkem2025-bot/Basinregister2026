@@ -1,38 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Klien Pemasyarakatan</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <h1>Register Klien Pemasyarakatan</h1>
+        <p>Terhubung ke Google Apps Script + Google Sheets (via clasp).</p>
+      </header>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets Web App</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+      <section class="card">
+        <h2>1) Cek Nomor Register Klien</h2>
+        <div class="search-grid">
+          <label>
+            Cari nama/nomor register dari sheet <code>cur!E2:E</code>
+            <input id="existingSearch" type="search" placeholder="Ketik nama klien / nomor register..." />
+          </label>
+          <select id="existingList" size="7"></select>
+        </div>
+        <div class="button-row">
+          <button id="refreshClientsBtn" class="secondary-btn">Refresh dari Google Sheets</button>
+          <button id="checkClientBtn" class="primary-btn">Cek Klien</button>
+        </div>
+        <p id="checkStatus" class="status-text"></p>
+      </section>
 
-<body>
-    <header>
-        <h1>Google Sheets Web App Interface</h1>
-    </header>
-    <main>
-        <section id="data-display">
-            <h2>Data from Google Sheets</h2>
-            <table id="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be inserted here -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Your Company Name</p>
-    </footer>
-    <script src="script.js"></script>
-</body>
+      <section id="entrySection" class="card hidden">
+        <h2>2) Entri Klien Baru</h2>
+        <form id="clientForm" class="field-grid">
+          <label>Nama klien <input name="namaKlien" required /></label>
+          <label>NIK / Identitas lain <input name="nik" required /></label>
+          <label>Tempat lahir <input name="tempatLahir" /></label>
+          <label>Tanggal lahir <input id="tanggalLahir" name="tanggalLahir" type="date" required /></label>
 
+          <label>Tanggal acuan hitung usia kedua
+            <input id="tanggalAcuan" name="tanggalAcuan" type="date" />
+          </label>
+
+          <div class="age-box">
+            <p>Usia terhadap hari ini: <strong id="usiaHariIni">-</strong></p>
+            <p>Usia terhadap tanggal acuan: <strong id="usiaAcuan">-</strong></p>
+          </div>
+
+          <label>Jenis kelamin
+            <select name="jenisKelamin" required>
+              <option value="">Pilih...</option>
+              <option>Laki-laki</option>
+              <option>Perempuan</option>
+            </select>
+          </label>
+          <label>Agama <input name="agama" /></label>
+          <label>Kewarganegaraan <input name="kewarganegaraan" value="Indonesia" /></label>
+          <label>Pendidikan <input name="pendidikan" /></label>
+          <label>Pekerjaan <input name="pekerjaan" /></label>
+          <label>Alamat <textarea name="alamat" rows="2"></textarea></label>
+          <label>Status Pernikahan <input name="statusPernikahan" /></label>
+          <label>No. Telp Klien <input name="telpKlien" /></label>
+          <label>No. Telp Penanggung Jawab <input name="telpPenanggungJawab" /></label>
+          <label>Perkara / Pasal <textarea name="perkaraPasal" rows="2"></textarea></label>
+          <label>Lama Pidana <input name="lamaPidana" /></label>
+
+          <label>Kategori layanan
+            <select id="serviceCategory"></select>
+          </label>
+          <label>Layanan utama
+            <select id="serviceType"></select>
+          </label>
+          <label>Layanan tambahan (multi register)
+            <select id="multiServices" multiple size="5"></select>
+          </label>
+
+          <button type="button" id="generateRegisterBtn" class="secondary-btn">Generate Nomor Register</button>
+          <ul id="registerResult" class="result-list"></ul>
+
+          <button type="submit" class="primary-btn">Simpan ke Google Sheets</button>
+          <p id="saveStatus" class="status-text"></p>
+        </form>
+      </section>
+    </div>
+
+    <script>
+      window.GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw0-Yhc2MNtVqV8FKfMlQV4_7dxrnOLDyqfrWl6lkiqGRlFyUlC9i3QXE59N2AbTDRX/exec";
+    </script>
+    <script src="app.js"></script>
+  </body>
 </html>
