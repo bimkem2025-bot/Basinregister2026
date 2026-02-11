@@ -1,6 +1,19 @@
-{ 
-  "dependencies": { 
-    "express": "^4.17.1", 
-    "dotenv": "^10.0.0" 
-  } 
+{
+  "name": "basinregister2026",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 4173",
+    "check:js": "node --check app.js",
+    "clasp:login": "npx clasp login",
+    "clasp:status": "npx clasp status",
+    "clasp:push": "npx clasp push",
+    "clasp:deploy": "npx clasp deploy --description \"register-klien-pemasyarakatan\""
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.5.0"
+  }
 }

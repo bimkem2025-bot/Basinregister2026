@@ -1,77 +1,54 @@
-# Setup and Development Guide for Codespace
+# Setup GitHub + clasp + Google Apps Script
 
-## Prerequisites
-- A GitHub account
-- GitHub Codespaces availability
-- Basic understanding of Git and GitHub
+Dokumen ini untuk memastikan app web lokal dari repo ini tersambung ke Google Apps Script.
 
-## Getting Started
-1. **Create a Codespace**:
-   - Navigate to the repository in GitHub: [Basinregister2026](https://github.com/bimkem2025-bot/Basinregister2026)
-   - Click on the green `Code` button, then select `Open with Codespaces`
-   - Create a new Codespace.
+## 1) Prasyarat
+- Node.js 18+
+- Akses Google account ke spreadsheet:
+  - `1HWNKazkmqHN9xvEV18WxImkxKFzzL64_Ab16v4px4Pk`
+- Deployment Web App aktif:
+  - `https://script.google.com/macros/s/AKfycbw0-Yhc2MNtVqV8FKfMlQV4_7dxrnOLDyqfrWl6lkiqGRlFyUlC9i3QXE59N2AbTDRX/exec`
 
-2. **Clone the repository** (if not using Codespaces):
-   ```bash
-   git clone https://github.com/bimkem2025-bot/Basinregister2026.git
-   cd Basinregister2026
-   ```
-
-## Setting Up the Environment
-- **Install Required Software**:
-  - Ensure you have [Node.js](https://nodejs.org/) installed. You can verify by running:
-  ```bash
-  node -v
-  npm -v
-  ```
-
-- **Install Dependencies**:
-   Run the following command in the terminal:
-   ```bash
-   npm install
-   ```
-
-## Development Workflow
-1. **Creating a New Branch**:
-   - Always create a new branch for your feature or bug fix:
-   ```bash
-   git checkout -b your-feature-branch
-   ```
-
-2. **Making Changes**:
-   - Modify the files as needed for your feature or fix.
-
-3. **Commit Your Changes**:
-   - Stage the changes and commit:
-   ```bash
-   git add .
-   git commit -m "Description of changes"
-   ```
-
-4. **Push Your Changes**:
-   - Push the changes to GitHub:
-   ```bash
-   git push origin your-feature-branch
-   ```
-
-5. **Create a Pull Request**:
-   - Go to the GitHub repository and create a pull request from your branch.
-
-## Running the Application
-- To start the application locally, run:
+## 2) Install dependency
 ```bash
-npm start
+npm install
 ```
 
-## Troubleshooting
-- If you encounter issues, check the console logs for errors.
+## 3) Login clasp
+```bash
+npm run clasp:login
+```
 
-## Additional Resources
-- [GitHub Documentation](https://docs.github.com/)
-- [Node.js Documentation](https://nodejs.org/en/docs/)
+## 4) Koneksi repo ini ke Apps Script
+1. Copy file template:
+   ```bash
+   cp .clasp.json.example .clasp.json
+   ```
+2. Cek koneksi:
+   ```bash
+   npm run clasp:status
+   ```
 
-## Contributing
-- Contributions are welcome! Please refer to the contribution guidelines for more information.
+## 5) Push perubahan dari GitHub repo ke GAS
+```bash
+npm run clasp:push
+```
 
----
-> **Last Updated**: 2026-02-07 15:08:31 UTC
+## 6) Deploy versi baru Web App
+```bash
+npm run clasp:deploy
+```
+
+## 7) Verifikasi endpoint
+- Buka URL berikut di browser:
+  - `https://script.google.com/macros/s/AKfycbw0-Yhc2MNtVqV8FKfMlQV4_7dxrnOLDyqfrWl6lkiqGRlFyUlC9i3QXE59N2AbTDRX/exec?action=listClients`
+- Jika benar, endpoint mengembalikan JSON list klien.
+
+## 8) Jalankan front-end lokal
+```bash
+npm run dev
+```
+
+## Catatan penting
+- Jika deployment baru dibuat, update URL di `index.html` atau set `window.GAS_WEB_APP_URL`.
+- Untuk workflow tim: edit di branch GitHub -> merge -> `clasp push` -> `clasp deploy`.
